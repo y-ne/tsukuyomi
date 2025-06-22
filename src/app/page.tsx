@@ -45,7 +45,7 @@ export default function Home() {
                         <div className="text-center space-y-2">
                             <h1 className="text-5xl font-bold">Font Testing</h1>
                             <p className="text-foreground/70">
-                                Testing "Tsukuyomi" in different fonts
+                                Testing &quot;Tsukuyomi&quot; in different fonts
                             </p>
                         </div>
 

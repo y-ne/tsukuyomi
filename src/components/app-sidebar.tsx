@@ -20,7 +20,20 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar";
 
-const data = {
+type FileItem = string;
+type TreeItem = FileItem | [string, ...TreeItem[]];
+
+interface ChangeItem {
+    file: string;
+    state: string;
+}
+
+interface SidebarData {
+    changes: ChangeItem[];
+    tree: TreeItem[];
+}
+
+const data: SidebarData = {
     changes: [
         {
             file: "README.md",
@@ -101,7 +114,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     );
 }
 
-function Tree({ item }: { item: string | any[] }) {
+function Tree({ item }: { item: TreeItem }) {
     const [name, ...items] = Array.isArray(item) ? item : [item];
 
     if (!items.length) {
