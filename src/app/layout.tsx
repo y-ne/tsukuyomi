@@ -28,7 +28,7 @@ const rockSalt = Rock_Salt({
 
 export const metadata: Metadata = {
     title: "Tsukuyomi",
-    description: "",
+    description: "A minimal Next.js app",
 };
 
 export default function RootLayout({
