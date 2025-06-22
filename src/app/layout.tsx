@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Kosugi_Maru, Gaegu, Playpen_Sans, Rock_Salt } from "next/font/google";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import "./globals.css";
 
 const kosugiMaru = Kosugi_Maru({
@@ -41,7 +43,10 @@ export default function RootLayout({
             <body
                 className={`${kosugiMaru.variable} ${gaegu.variable} ${playpenSans.variable} ${rockSalt.variable} antialiased`}
             >
-                {children}
+                <SidebarProvider>
+                    <AppSidebar />
+                    <SidebarInset>{children}</SidebarInset>
+                </SidebarProvider>
             </body>
         </html>
     );
