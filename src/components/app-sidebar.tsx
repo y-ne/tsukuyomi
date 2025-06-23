@@ -155,7 +155,7 @@ function Tree({ node }: { node: FileNode }) {
         <SidebarMenuItem>
             <Collapsible
                 className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-                defaultOpen={node.name === "example"}
+                // defaultOpen={node.name === "example"}
             >
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
