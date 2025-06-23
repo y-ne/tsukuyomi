@@ -21,8 +21,6 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
     SidebarRail,
 } from "@/components/ui/sidebar";
 
@@ -42,7 +40,7 @@ const sidebarData = {
     changes: [
         {
             name: "README.md",
-            status: "M", // M = Modified, A = Added, D = Deleted
+            status: "M",
             url: "/",
         },
     ] as ChangeItem[],
@@ -85,14 +83,39 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarGroup>
                     <SidebarGroupLabel>Changes</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <NavChanges />
+                        <SidebarMenu>
+                            {sidebarData.changes.map((item, index) => (
+                                <SidebarMenuItem key={index}>
+                                    <SidebarMenuButton asChild={!!item.url}>
+                                        {item.url ? (
+                                            <Link href={item.url}>
+                                                <File />
+                                                <span>{item.name}</span>
+                                            </Link>
+                                        ) : (
+                                            <>
+                                                <File />
+                                                <span>{item.name}</span>
+                                            </>
+                                        )}
+                                    </SidebarMenuButton>
+                                    <SidebarMenuBadge>
+                                        {item.status}
+                                    </SidebarMenuBadge>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
 
                 <SidebarGroup>
                     <SidebarGroupLabel>Files</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <NavFileTree />
+                        <SidebarMenu>
+                            {sidebarData.fileTree.map((item, index) => (
+                                <Tree key={index} node={item} />
+                            ))}
+                        </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
@@ -101,87 +124,50 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     );
 }
 
-function NavChanges() {
-    return (
-        <SidebarMenu>
-            {sidebarData.changes.map((item, index) => (
-                <SidebarMenuItem key={index}>
-                    {item.url ? (
-                        <SidebarMenuButton asChild>
-                            <Link href={item.url}>
-                                <File />
-                                <span>{item.name}</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    ) : (
-                        <SidebarMenuButton>
-                            <File />
-                            <span>{item.name}</span>
-                        </SidebarMenuButton>
-                    )}
-                    <SidebarMenuBadge>{item.status}</SidebarMenuBadge>
-                </SidebarMenuItem>
-            ))}
-        </SidebarMenu>
-    );
-}
-
-function NavFileTree() {
-    return (
-        <SidebarMenu>
-            {sidebarData.fileTree.map((item, index) => (
-                <FileTreeNode key={index} node={item} />
-            ))}
-        </SidebarMenu>
-    );
-}
-
-function FileTreeNode({ node }: { node: FileNode }) {
+function Tree({ node }: { node: FileNode }) {
     const pathname = usePathname();
     const hasChildren = node.children && node.children.length > 0;
     const isActive = node.url === pathname;
 
     if (!hasChildren) {
         return (
-            <SidebarMenuSubItem>
+            <SidebarMenuButton
+                asChild={!!node.url}
+                isActive={isActive}
+                className="data-[active=true]:bg-transparent"
+            >
                 {node.url ? (
-                    <SidebarMenuSubButton asChild isActive={isActive}>
-                        <Link href={node.url}>
-                            <File />
-                            <span>{node.name}</span>
-                        </Link>
-                    </SidebarMenuSubButton>
-                ) : (
-                    <SidebarMenuSubButton>
+                    <Link href={node.url}>
                         <File />
                         <span>{node.name}</span>
-                    </SidebarMenuSubButton>
+                    </Link>
+                ) : (
+                    <>
+                        <File />
+                        <span>{node.name}</span>
+                    </>
                 )}
-            </SidebarMenuSubItem>
+            </SidebarMenuButton>
         );
     }
 
     return (
         <SidebarMenuItem>
             <Collapsible
-                defaultOpen={
-                    node.name === "components" ||
-                    node.name === "ui" ||
-                    node.name === "example"
-                }
-                className="group/collapsible"
+                className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+                defaultOpen={node.name === "example"}
             >
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
-                        <ChevronRight className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                        <ChevronRight className="transition-transform" />
                         <Folder />
                         <span>{node.name}</span>
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <SidebarMenuSub>
-                        {node.children?.map((childNode, index) => (
-                            <FileTreeNode key={index} node={childNode} />
+                        {node.children?.map((subNode, index) => (
+                            <Tree key={index} node={subNode} />
                         ))}
                     </SidebarMenuSub>
                 </CollapsibleContent>
